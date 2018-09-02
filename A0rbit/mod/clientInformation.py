@@ -6,7 +6,7 @@ HOST = "www.andromeda-serv.com"
 # in order to connect to the game
 # TODO: automate this part!
 UID = "41299" #UserID
-SID = "13224618e244ea0a51ae5cf4621829966807ee61" # SessionID
+SID = raw_input("Enter SID\n")#"de3cc29efd9b37138205dd077bad36cd49afc2a5" # SessionID
 CV  = "4.1" #ClientVersion
 
 # This is the map address, some servers might have different
