@@ -34,17 +34,23 @@ class Networking:
         # Reference to the GUI object in order to access it
         self.gui = None
 
+        # Set it to false before closing app
+        self.run = True
+
     def login(self, guiObj):
         self.gui = guiObj
-        self.send("{0}|{1}|{2}|{3}".format(LOGIN, UID, SID, CV))
+        print "login send return:",self.send("{0}|{1}|{2}|{3}".format(LOGIN, UID, SID, CV))
+
+        #self.send("1|1300|1300|1000|1000")
 
         # now listen for incoming packets
         threading._start_new_thread(self.handlePackets, ())
     
     def logout(self):
         self.send("0|l")
-
+        self.run = False
         self.sock.close()
+
 
     def initHero(self, packet):
 
@@ -69,6 +75,7 @@ class Networking:
 
         print playerData
 
+        
         if self.hero is None:
             self.hero = Hero(playerData, self)
     
@@ -77,21 +84,39 @@ class Networking:
             self.hero.updatePosition(packet[2], packet[3])
         
     def createBox(self, packet):
-        BonusBox({
-            "boxID": packet[2], #id
-            "x": packet[4], #x
-            "y": packet[5]  #y
-            
-        }, self.gui)
+        if len(packet) > 0:
+            if int(packet[3]) is not 1: #not cargo box
+                BonusBox({
+                    "boxID": packet[2], #id
+                    "x": packet[4], #x
+                    "y": packet[5]  #y
+                    
+                }, self.gui)
     
     def removeBox(self, packet):
         for box in self.gui.bonusBoxes:
             if box.boxID == int(packet[2]):
                 box.remove()
                 break
+    
+    def updateCurrency(self, packet):
+        if packet[2] == "CRE": #credits
+            self.hero.credits += int(packet[3])
+        elif packet[2] == "URI":
+            self.hero.uridium += int(packet[3])
+        
+
+        self.gui.setText(newText="{0} / {1} \n{2}/{3}\n{4}cr\n{5}uri".format(
+            self.hero.name, 
+            self.hero.userID, 
+            self.hero.hp, 
+            self.hero.hpmax, 
+            self.hero.credits, 
+            self.hero.uridium
+        ))
 
     def handlePackets(self):
-        while True:
+        while self.run:
             packet = self.sock.recv(16384)
             packet = packet.decode('utf-8')
             packet.replace("\r\r\r", "")
@@ -99,19 +124,22 @@ class Networking:
             nPacket = packet.split("\x00")
             
             for p in nPacket:
+                #print p
                 if p != "":
                     packet = p.split("|")
 
                     if len(packet) >= 2:
                         if packet[0] == "ERR":
                             errCode = int(packet[1])
-
+                            
                             if errCode == 1:
                                 print "Ship was destroyed"
                             elif errCode == 8:
                                 print "Your Server ID or Current Map is wrong."
                             elif errCode == 41:
                                 print "Invalid Session ID."
+                            else:
+                                print "any error lol"
                             
                             break
                         
@@ -158,7 +186,6 @@ class Networking:
 
 
                         elif packet[1] == "D": #hero update position
-                            print "update"
                             self.updateHeroPosition(packet)
 
                         elif packet[1] == "C": #create ship
@@ -187,8 +214,8 @@ class Networking:
                             self.createBox(packet)
                         elif packet[1] == "2": #remove box
                             self.removeBox(packet)
-                        elif packet[1] == "LM":
-                            pass#self.logMessages(packet)
+                        elif packet[1] == "y":
+                            self.updateCurrency(packet)
                         elif packet[1] == "1": #ship movement
                             pass
                         elif packet[1] == "S": #set status
@@ -197,4 +224,4 @@ class Networking:
     def send(self, data):
         data += "\r\n"
         
-        self.sock.send(data.encode('utf-8'))
+        return self.sock.send(data.encode('utf-8'))

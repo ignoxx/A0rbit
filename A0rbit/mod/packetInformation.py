@@ -10,6 +10,8 @@ CREATE_PORTAL = "p"
 CREATE_SHIP = "C"
 CREATE_BOX = "c"
 
+COLLECT_BOX = "x"
+
 REMOVE_BOX = "2"
 
 

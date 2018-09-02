@@ -10,3 +10,6 @@ class NetworkingCtrl:
     
     def logout(self):
         self.networking.logout()
+    
+    def send(self, data):
+        self.networking.send(data)
