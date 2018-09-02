@@ -33,6 +33,11 @@ class Networking:
 
         # now listen for incoming packets
         threading._start_new_thread(self.handlePackets, ())
+    
+    def logout(self):
+        self.send("0|l")
+
+        self.sock.close()
 
     def initHero(self, packet):
 

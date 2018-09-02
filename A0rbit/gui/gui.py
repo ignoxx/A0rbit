@@ -1,4 +1,4 @@
-from ctrl.loginCtrl import LoginCtrl
+from ctrl.networkingCtrl import NetworkingCtrl
 from Tkinter import *
 
 class Gui:
@@ -10,6 +10,9 @@ class Gui:
 
         self.master = Tk()
         self.master.title("A0rbit v1")
+
+        # what happens after closing the window?
+        self.master.protocol("WM_DELETE_WINDOW", self.onClose)
 
         self.canvas = Canvas(self.master, width=self.width*self.scale, height=self.height*self.scale)
         self.canvas.pack()
@@ -26,4 +29,9 @@ class Gui:
     
     def login(self):
         # Login to the game
-        LoginCtrl().login()
+        NetworkingCtrl().login()
+    
+    def onClose(self):
+        NetworkingCtrl().logout()
+        exit()
+        
