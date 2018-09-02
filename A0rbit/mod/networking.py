@@ -1,5 +1,8 @@
 from clientInformation import *
+from packetInformation import *
 from hero import Hero
+from collectAble import BonusBox
+
 import socket
 import time
 import threading
@@ -28,8 +31,12 @@ class Networking:
         # Hero object stored here
         self.hero = None 
 
-    def login(self):
-        self.send("LOGIN|{0}|{1}|{2}".format(UID, SID, CV))
+        # Reference to the GUI object in order to access it
+        self.gui = None
+
+    def login(self, guiObj):
+        self.gui = guiObj
+        self.send("{0}|{1}|{2}|{3}".format(LOGIN, UID, SID, CV))
 
         # now listen for incoming packets
         threading._start_new_thread(self.handlePackets, ())
@@ -63,7 +70,25 @@ class Networking:
         print playerData
 
         if self.hero is None:
-            self.hero = Hero(playerData)
+            self.hero = Hero(playerData, self)
+    
+    def updateHeroPosition(self, packet):
+        if self.hero is not None:
+            self.hero.updatePosition(packet[2], packet[3])
+        
+    def createBox(self, packet):
+        BonusBox({
+            "boxID": packet[2], #id
+            "x": packet[4], #x
+            "y": packet[5]  #y
+            
+        }, self.gui)
+    
+    def removeBox(self, packet):
+        for box in self.gui.bonusBoxes:
+            if box.boxID == int(packet[2]):
+                box.remove()
+                break
 
     def handlePackets(self):
         while True:
@@ -133,8 +158,9 @@ class Networking:
 
 
                         elif packet[1] == "D": #hero update position
-                            print "update hero position"
-                            #self.updateHeroPosition(packet)
+                            print "update"
+                            self.updateHeroPosition(packet)
+
                         elif packet[1] == "C": #create ship
                             '''
                             args[2] == id
@@ -158,9 +184,9 @@ class Networking:
                         elif packet[1] == "R" or packet[1] == "K": #remove or destroy ship
                             pass
                         elif packet[1] == "c": #create box
-                            pass#self.createBox(packet)
+                            self.createBox(packet)
                         elif packet[1] == "2": #remove box
-                            pass#self.removeBox(packet)
+                            self.removeBox(packet)
                         elif packet[1] == "LM":
                             pass#self.logMessages(packet)
                         elif packet[1] == "1": #ship movement

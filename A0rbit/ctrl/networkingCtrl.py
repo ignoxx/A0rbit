@@ -5,8 +5,8 @@ class NetworkingCtrl:
     def __init__(self):
         self.networking = Networking.getInstance()
     
-    def login(self):
-        self.networking.login()
+    def login(self, guiObj):
+        self.networking.login(guiObj)
     
     def logout(self):
         self.networking.logout()

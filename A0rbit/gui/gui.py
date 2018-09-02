@@ -23,13 +23,23 @@ class Gui:
         # Player info text
         self.playerInfoText = self.canvas.create_text(12, 12, anchor=NW, text="Loading..", fill="yellow")
 
+        # Store all bonusBoxes here
+        self.bonusBoxes = list()
+
         self.login()
 
         mainloop()
     
+    def setText(self, elementId = None, newText=""): 
+        if elementId is None: elementId = self.playerInfoText
+        self.canvas.itemconfig(elementId, text=newText)
+
+    def setColor(self, elementId, newColor): 
+        self.canvas.itemconfig(elementId, fill=newColor)
+    
     def login(self):
         # Login to the game
-        NetworkingCtrl().login()
+        NetworkingCtrl().login(self)
     
     def onClose(self):
         NetworkingCtrl().logout()
