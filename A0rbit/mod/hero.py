@@ -78,10 +78,11 @@ class Hero:
     
     def collectBoxes(self):
         while True:
-            time.sleep(.33)
+            # time.sleep(.05)
 
             if not self.busy and len(self.networking.gui.bonusBoxes) > 0:
                 self.busy = True
+
                 # get the closest bonusbox from my position
                 # {distance:bbobj}
                 tmpBoxes = dict()
@@ -91,7 +92,7 @@ class Hero:
                 
                 nextBox = tmpBoxes[min(tmpBoxes)]
 
-                print "move to next box @", nextBox.x, nextBox.y, ".."
+                # print "move to next box @", nextBox.x, nextBox.y, ".."
                 self.moveTo(nextBox.x, nextBox.y)
                 self.networking.send("{0}|{1}".format(
                     COLLECT_BOX,
@@ -99,8 +100,9 @@ class Hero:
                 ))
                 nextBox.remove()
 
+
                 self.busy = False
-                print "collected!"
+                # print "collected!"
     
     def moveTo(self, nx , ny):
         self.networking.send("{0}|{1}|{2}|{3}|{4}".format(
@@ -112,7 +114,7 @@ class Hero:
         ))
 
         while self.distance_between_points(nx, ny, self.x, self.y) > 50:
-            time.sleep(.33)
+            time.sleep(.2)
 
 
 

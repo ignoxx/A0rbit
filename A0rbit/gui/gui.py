@@ -7,7 +7,7 @@ class Gui:
     def __init__(self):
         self.width = 208
         self.height = 128
-        self.scale = 3
+        self.scale = 4
 
         self.master = Tk()
         self.master.title("A0rbit v1")

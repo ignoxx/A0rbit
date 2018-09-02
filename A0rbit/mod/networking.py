@@ -45,12 +45,18 @@ class Networking:
 
         # now listen for incoming packets
         threading._start_new_thread(self.handlePackets, ())
+
+        # keep connectio alive
+        threading._start_new_thread(self.keepAlive, ())
     
     def logout(self):
         self.send("0|l")
         self.run = False
         self.sock.close()
 
+    def keepAlive(self):
+        time.sleep(25)
+        self.send("PNG")
 
     def initHero(self, packet):
 
