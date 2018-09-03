@@ -53,6 +53,7 @@ class Hero:
         ))
 
         print "start hero AI.."
+        self.networking.send("S|CLK")
         threading._start_new_thread(self.heroAI, ())
 
     

@@ -12,12 +12,16 @@ class BonusBox:
 
         self.gui = gui
 
-        if self.type == 1:
+        if self.type == 1: # cargo
             self.color = "orange"
-        else:
+        elif self.type == 2:
             self.color = "yellow"
-            self.gui.bonusBoxes.append(self)
-        
+            
+        elif self.type == 21:
+            self.color = "green"
+            
+            
+        self.gui.bonusBoxes.append(self)  
         
 
         self.guiObj = self.gui.canvas.create_rectangle(

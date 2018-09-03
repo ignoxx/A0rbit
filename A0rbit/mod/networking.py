@@ -56,6 +56,7 @@ class Networking:
     def keepAlive(self):
         time.sleep(25)
         self.send("PNG")
+        self.send("S|CLK")
     
     def createShip(self, packet):
         shipData = {
@@ -122,15 +123,14 @@ class Networking:
         
     def createBox(self, packet):
         if len(packet) > 0:
-            # if int(packet[3]) is not 1: #not cargo box
-            print packet[3]
-            BonusBox({
-                "boxID": packet[2], #id
-                "x": packet[4], #x
-                "y": packet[5],  #y
-                "type": packet[3]
-                
-            }, self.gui)
+            if int(packet[3]) is 1 or 2: #cargo and box
+                BonusBox({
+                    "boxID": packet[2], #id
+                    "x": packet[4], #x
+                    "y": packet[5],  #y
+                    "type": packet[3]
+                    
+                }, self.gui)
 
     
     def removeBox(self, packet):
