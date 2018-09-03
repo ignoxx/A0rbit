@@ -1,16 +1,24 @@
+from settings import *
+
 class BonusBox:
 
     def __init__(self, data, gui):
         
         self.boxID = int(data["boxID"])
-        self.x = float(data["x"])
-        self.y = float(data["y"])
-
+        self.x = int(data["x"])
+        self.y = int(data["y"])
+        self.type = int(data["type"])
         self.size = 2
-        self.color = "yellow"
 
-        
         self.gui = gui
+
+        if self.type == 1:
+            self.color = "orange"
+        else:
+            self.color = "yellow"
+            self.gui.bonusBoxes.append(self)
+        
+        
 
         self.guiObj = self.gui.canvas.create_rectangle(
             (self.x/100 * self.gui.scale)-self.size, 
@@ -20,10 +28,11 @@ class BonusBox:
             fill=self.color
         )
 
-        self.gui.bonusBoxes.append(self)
+        
 
     def hide(self):
-        self.gui.setColor(self.guiObj, "black")
+        # self.gui.setColor(self.guiObj, "black")
+        self.gui.canvas.delete(self.guiObj)
     
     def show(self):
         self.gui.setColor(self.guiObj, self.color)

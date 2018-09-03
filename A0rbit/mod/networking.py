@@ -1,7 +1,8 @@
+from collectAble import BonusBox
 from clientInformation import *
 from packetInformation import *
 from hero import Hero
-from collectAble import BonusBox
+from ship import Ship
 
 import socket
 import time
@@ -55,6 +56,38 @@ class Networking:
     def keepAlive(self):
         time.sleep(25)
         self.send("PNG")
+    
+    def createShip(self, packet):
+        shipData = {
+            "id": packet[2],
+            "shipID": packet[3],
+            "name": packet[4],
+            "x": packet[7],
+            "y": packet[8],
+            "company": packet[9],
+            "isNpc": False, # packet[16],
+            "cloaked": False # packet[17]
+        }
+
+        Ship(shipData, self.gui)
+
+    def removeShip(self, packet):
+        for ship in self.gui.ships:
+            if ship.id == int(packet[2]):
+                ship.moving = False
+                ship.remove()
+                break
+    
+    def updateShipPosition(self, packet):
+        # 3 - dest x
+        # 4 - dest y
+        # 5 - duration
+
+        for ship in self.gui.ships:
+            if ship.id == int(packet[2]):
+                if not ship.moving:
+                    threading._start_new_thread(ship.updatePosition, (packet[3], packet[4], packet[5],))
+                break
 
     def initHero(self, packet):
 
@@ -89,13 +122,16 @@ class Networking:
         
     def createBox(self, packet):
         if len(packet) > 0:
-            if int(packet[3]) is not 1: #not cargo box
-                BonusBox({
-                    "boxID": packet[2], #id
-                    "x": packet[4], #x
-                    "y": packet[5]  #y
-                    
-                }, self.gui)
+            # if int(packet[3]) is not 1: #not cargo box
+            print packet[3]
+            BonusBox({
+                "boxID": packet[2], #id
+                "x": packet[4], #x
+                "y": packet[5],  #y
+                "type": packet[3]
+                
+            }, self.gui)
+
     
     def removeBox(self, packet):
         for box in self.gui.bonusBoxes:
@@ -211,9 +247,9 @@ class Networking:
                             args[16] == set npc (bool)
                             args[17] == cloaked (bool)
                             '''
-                            pass
+                            self.createShip(packet)
                         elif packet[1] == "R" or packet[1] == "K": #remove or destroy ship
-                            pass
+                            self.removeShip(packet)
                         elif packet[1] == "c": #create box
                             self.createBox(packet)
                         elif packet[1] == "2": #remove box
@@ -221,7 +257,7 @@ class Networking:
                         elif packet[1] == "y":
                             self.updateCurrency(packet)
                         elif packet[1] == "1": #ship movement
-                            pass
+                            self.updateShipPosition(packet)
                         elif packet[1] == "S": #set status
                             pass#print "set status (config?)"
     

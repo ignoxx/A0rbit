@@ -11,3 +11,4 @@ KILL_NPCS = {False: {
     "npcs": []
 }}
 
+PRIORITY = "COLLECT"

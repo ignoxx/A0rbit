@@ -1,4 +1,5 @@
 from packetInformation import *
+from settings import *
 
 import time
 import threading
@@ -51,8 +52,8 @@ class Hero:
             self.uridium
         ))
 
-        print "start collecting.."
-        threading._start_new_thread(self.collectBoxes, ())
+        print "start hero AI.."
+        threading._start_new_thread(self.heroAI, ())
 
     
     def hide(self):
@@ -67,8 +68,8 @@ class Hero:
     def updatePosition(self, x, y):
         self.networking.gui.canvas.delete(self.guiObj)
 
-        self.x = float(x)
-        self.y = float(y)
+        self.x = int(x)
+        self.y = int(y)
         self.guiObj = self.networking.gui.canvas.create_rectangle(
             (self.x/100 * self.networking.gui.scale)-self.size, 
             (self.y/100 * self.networking.gui.scale)-self.size, 
@@ -77,9 +78,12 @@ class Hero:
             fill=self.color
         )
     
-    def collectBoxes(self):
+    def heroAI(self):
         while True:
             time.sleep(.2)
+
+            # get the closest npc and collectable
+            # depending on priority choose the nearest one
 
             if not self.busy and len(self.networking.gui.bonusBoxes) > 0:
                 self.busy = True
@@ -93,7 +97,6 @@ class Hero:
                 
                 nextBox = tmpBoxes[min(tmpBoxes)]
 
-                # print "move to next box @", nextBox.x, nextBox.y, ".."
                 self.moveTo(nextBox.x, nextBox.y)
                 self.networking.send("{0}|{1}".format(
                     COLLECT_BOX,
@@ -103,7 +106,6 @@ class Hero:
 
 
                 self.busy = False
-                # print "collected!"
     
     def moveTo(self, nx , ny):
         self.networking.send("{0}|{1}|{2}|{3}|{4}".format(
@@ -116,7 +118,7 @@ class Hero:
 
         started = datetime.datetime.now()
         while self.distance_between_points(nx, ny, self.x, self.y) >= 50:
-            if datetime.datetime.now() - started > datetime.timedelta(minutes=1):
+            if datetime.datetime.now() - started > datetime.timedelta(seconds=30):
                 self.busy = False
                 break
             time.sleep(.33)

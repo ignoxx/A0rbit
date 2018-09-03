@@ -27,6 +27,9 @@ class Gui:
         # Store all bonusBoxes here
         self.bonusBoxes = list()
 
+        # Store all ships here
+        self.ships = list()
+
         self.login()
 
         mainloop()
