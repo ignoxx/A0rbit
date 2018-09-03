@@ -41,8 +41,6 @@ class Networking:
         self.gui = guiObj
         print "login send return:",self.send("{0}|{1}|{2}|{3}".format(LOGIN, UID, SID, CV))
 
-        #self.send("1|1300|1300|1000|1000")
-
         # now listen for incoming packets
         threading._start_new_thread(self.handlePackets, ())
 

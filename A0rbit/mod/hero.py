@@ -3,6 +3,7 @@ from packetInformation import *
 import time
 import threading
 import math
+import datetime
 
 
 class Hero:
@@ -78,7 +79,7 @@ class Hero:
     
     def collectBoxes(self):
         while True:
-            # time.sleep(.05)
+            time.sleep(.2)
 
             if not self.busy and len(self.networking.gui.bonusBoxes) > 0:
                 self.busy = True
@@ -113,8 +114,12 @@ class Hero:
             int(self.y)
         ))
 
-        while self.distance_between_points(nx, ny, self.x, self.y) > 50:
-            time.sleep(.2)
+        started = datetime.datetime.now()
+        while self.distance_between_points(nx, ny, self.x, self.y) >= 50:
+            if datetime.datetime.now() - started > datetime.timedelta(minutes=1):
+                self.busy = False
+                break
+            time.sleep(.33)
 
 
 

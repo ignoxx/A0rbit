@@ -29,6 +29,7 @@ class BonusBox:
         self.gui.setColor(self.guiObj, self.color)
     
     def remove(self):
-        self.gui.bonusBoxes.remove(self)
+        if self in self.gui.bonusBoxes:
+            self.gui.bonusBoxes.remove(self)
         self.hide()
     
