@@ -1,5 +1,5 @@
 # A0rbit
-===
+
 # Intro
 This is a simple bot for DarkOrbit using the v4.1 client(or below) which is still in use by some private servers. I've created this bot for educational purpose to gain experience in the making process.
 
