@@ -1,4 +1,13 @@
 # A0rbit
+===
+# Intro
+This is a simple bot for DarkOrbit using the v4.1 client(or below) which is still in use by some private servers. I've created this bot for educational purpose to gain experience in the making process.
 
-A simple bot for DarkOrbit(client v4.1) that collects collectable items. It moves the player directly to the next closest box.
-Created for educational purpose!
+More features may come over time.
+
+The [B0rbit](https://github.com/agrafix/B0rbit) repository helped me getting started, thanks for it!
+===
+
+# Setup
+Provide the correct connection information in mod / clientInformation.py in order to get the bot running.
+
