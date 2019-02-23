@@ -13,3 +13,7 @@ Provide the correct connection information in mod / clientInformation.py in orde
 
 Start it using ```python main.py```, code based on python 2.7.15
 
+# Images
+The window represents the whole game map. The yellow points represents the bonus boxes and the white point is the player.
+
+![GUI](https://github.com/IgnasKavaliauskas/A0rbit/blob/master/Images/screenshot.png)
