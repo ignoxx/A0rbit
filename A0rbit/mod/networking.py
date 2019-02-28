@@ -157,7 +157,7 @@ class Networking:
 
     def handlePackets(self):
         while self.run:
-            packet = self.sock.recv(16384)
+            packet = self.sock.recv(4096)
             packet = packet.decode('utf-8')
             packet.replace("\r\r\r", "")
             
